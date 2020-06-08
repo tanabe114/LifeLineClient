@@ -1,53 +1,41 @@
 ﻿@page "/"
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject HttpClient Http
+@using  LifeLineClient.Models
 
+<h2>グループ一覧</h2>
 <div class="card" style="width: 20rem;">
-    @if (Profile != null)
-    {
-        <img class="card-img" src="@Profile?.PictureUrl" alt="Loading image..." />
-        <div class="card-body">
-            <h5 class="card-title">@Profile?.DisplayName</h5>
-            <p class="card-text">@Profile?.StatusMessage</p>
-        </div>
-    }
-<ul class="list-group">
-    <li class="list-group-item">LIFF Ver.: @Version</li>
-    <li class="list-group-item">LINE Ver: @LineVersion</li>
-    <li class="list-group-item">OS: @OS</li>
-    <li class="list-group-item">Language: @Language</li>
-    <li class="list-group-item">TokenId: @TokenId</li>
-    <li class="list-group-item">Type: @Context?.Type</li>
-    <li class="list-group-item">ViewType: @Context?.ViewType</li>
-    <li class="list-group-item">UserId: @Context?.UserId</li>
-    <li class="list-group-item">IDToken: @IDToken?.Substring(0, 10)xxxxxxxx...</li>
 
-    @if (@Context?.Type == ContextType.Utou)
+    @if (indexResults != null)
     {
-        <li class="list-group-item">UtouId: @Context?.UtouId</li>
+        <ul class="list-group">
+            @foreach (IndexResult indexResult in indexResults)
+            {
+            <li class="list-group-item">
+                <a href="Details?group_Id=@indexResult.group_Id">@indexResult.group_Name (@indexResult.group_Count)</a>
+            </li>
+            <li class="list-group-item">
+                Group_Id:@indexResult.group_Id
+            </li>
+            }
+
+        </ul>
     }
-    else if (@Context?.Type == ContextType.Room)
+    else
     {
-        <li class="list-group-item">RoomId: @Context?.RoomId</li>
+        <p>現在あなたが所属しているグループはございません。</p>
     }
-    else if (@Context?.Type == ContextType.Group)
-    {
-        <li class="list-group-item">GroupId: @Context?.GroupId</li>
-    }
-</ul>
 </div>
 
 @code{
 
-    protected Profile Profile { get; set; }
-    protected LiffContext Context { get; set; }
-    protected string TokenId { get; set; }
-    protected string OS { get; set; }
-    protected string Language { get; set; }
-    protected string Version { get; set; }
-    protected string IDToken { get; set; }
-    protected string LineVersion { get; set; }
-    protected Friendship Friendship { get; set; }
+    protected string AccessToken { get; set; }
+    private List<IndexResult> indexResults;
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,19 +51,19 @@
                 }
                 Liff.Initialized = true;
             }
-            Profile = await Liff.GetProfile();
-            if (await Liff.IsInClient())
-            {
-                Context = await Liff.GetContext();
-            }
-            var idtoken = await Liff.GetDecodedIDToken();
-            TokenId = idtoken.Sub;
-            OS = await Liff.GetOS();
-            Language = await Liff.GetLanguage();
-            Version = await Liff.GetVersion();
-            LineVersion = await Liff.GetLineVersion();
-            //Friendship = await Liff.GetFriendship();
-            IDToken = await Liff.GetIDToken();
+            AccessToken = await Liff.GetAccessToken();
+
+            //Azure APIへつなげる準備
+            string url = $"https://lifelinebotapi.azurewebsites.net/api/GroupList/GetGroupList?accessToken={AccessToken}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Access-Control-Allow-Origin", "*");
+            //リクエスト投げる
+            HttpResponseMessage response = await Http.SendAsync(request);
+            //取得値の処理
+            string resJson = await response.Content.ReadAsStringAsync();
+            indexResults = JsonSerializer.Deserialize<List<IndexResult>>(resJson);
+            //結果反映
+            Console.WriteLine(indexResults[0].group_Name);
             StateHasChanged();
         }
         catch (Exception e)

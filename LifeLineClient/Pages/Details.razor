@@ -7,8 +7,12 @@
 <hr />
 <button class="form-control btn btn-dark" @onclick="OnClickButtonClose">Close Window</button>
 
+
 @code
 {
+    [Parameter]
+    public int group_Id { get; set; }
+
     private async Task OnClickButtonLiff()
     {
         await Liff.OpenWindow("https://developers.line.biz/ja/reference/liff/", external: false);

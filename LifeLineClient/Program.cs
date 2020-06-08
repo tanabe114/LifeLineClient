@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LifeLineClient.Models;
 
 namespace LifeLineClient
 {
@@ -20,9 +21,12 @@ namespace LifeLineClient
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
             builder.Services.AddSingleton<ILiffClient>(new LiffClient(appSettings.LiffId));
+            builder.Services.AddTransient(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            });
             var host = builder.Build();
             await host.RunAsync();
         }
-
     }
 }
