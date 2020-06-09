@@ -28,7 +28,7 @@
     }
     else
     {
-        <p>現在あなたが所属しているグループはございません。</p>
+        <p>読み込み中です。もしくは現在あなたが所属しているグループはございません。</p>
     }
 </div>
 
@@ -63,7 +63,6 @@
             string resJson = await response.Content.ReadAsStringAsync();
             indexResults = JsonSerializer.Deserialize<List<IndexResult>>(resJson);
             //結果反映
-            Console.WriteLine(indexResults[0].group_Name);
             StateHasChanged();
         }
         catch (Exception e)
