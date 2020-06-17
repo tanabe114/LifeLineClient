@@ -1,0 +1,17 @@
+﻿@using LifeLineClient.Models
+
+<li>
+    <div class="@Member.status"><img alt="profile_img" src="@Member.img_Url" /></div>
+    <h3>@Member.name</h3>
+    <div>
+        <p>@Member.comment</p>
+        <p>@Member.location_Title</p>
+        <p>@Member.location_Address</p>
+        <p>更新日時：@Member.created_At</p>
+    </div>
+</li>
+
+@code {
+    [Parameter]
+    public Member Member { get; set; }
+}

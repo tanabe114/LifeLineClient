@@ -1,12 +1,12 @@
 ﻿@page "/"
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
+@inject HttpClient Http
 @using System.Net.Http
 @using System.Net.Http.Json
 @using System.Text.Json
 @using System.Text.Json.Serialization
-@inject HttpClient Http
-@using  LifeLineClient.Models
+@using LifeLineClient.Models
 
 <h2>グループ一覧</h2>
 <div class="card" style="width: 20rem;">
@@ -16,12 +16,9 @@
         <ul class="list-group">
             @foreach (IndexResult indexResult in indexResults)
             {
-            <li class="list-group-item">
-                <a href="Details?group_Id=@indexResult.group_Id">@indexResult.group_Name (@indexResult.group_Count)</a>
-            </li>
-            <li class="list-group-item">
-                Group_Id:@indexResult.group_Id
-            </li>
+                <li class="list-group-item">
+                    <a href="details/@indexResult.group_Id">@indexResult.group_Name (@indexResult.group_Count)</a>
+                </li>
             }
 
         </ul>

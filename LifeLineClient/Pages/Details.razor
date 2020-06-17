@@ -1,30 +1,79 @@
 ﻿@page "/details"
+@page "/details/{Group_Id}"
+@using LifeLineClient.Models
+@using LifeLineClient.Components
+@using System.Net.Http
+@using System.Text.Json
+@inject HttpClient Http
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
+@* 一覧へ戻るボタン *@
 
-<button class="form-control btn btn-primary" @onclick="OnClickButtonLiff">LIFF API Reference</button>
-<button class="form-control btn btn-secondary" @onclick="OnClickButtonGithub">liff-app-on-blazor: Github</button>
-<hr />
-<button class="form-control btn btn-dark" @onclick="OnClickButtonClose">Close Window</button>
-
+@if (detailsResult != null)
+{
+    @* グループ名 *@
+    <h2>@detailsResult.group_Name</h2>
+    <section>
+        <div><p>グループ人数</p><p>@detailsResult.group_Count</p></div>
+        <div><p>無事</p><p>@detailsResult.group_Safely</p></div>
+        <div><p>重傷・軽傷</p><p>@detailsResult.group_Injured</p></div>
+    </section>
+    <section>
+        @if (detailsResult.liffMemberSafeties.Count > 0)
+        {
+            <ul>
+                @foreach (Member member in detailsResult.liffMemberSafeties)
+                {
+                <GroupMembers Member="@member" />
+                }
+            </ul>
+        }
+    </section>
+}
 
 @code
 {
+    private string _Group_id = "0";
+
     [Parameter]
-    public int group_Id { get; set; }
-
-    private async Task OnClickButtonLiff()
+    public string Group_Id
     {
-        await Liff.OpenWindow("https://developers.line.biz/ja/reference/liff/", external: false);
+        get
+        {
+            return this._Group_id;
+        }
+        set
+        {
+            this._Group_id = System.Net.WebUtility.UrlDecode(value);
+        }
     }
 
-    private async Task OnClickButtonGithub()
-    {
-        await Liff.OpenWindow("https://github.com/line-developer-community/liff-client-csharp", external: true);
-    }
+    public DetailsResult detailsResult { get; set; } = null;
 
-    private async Task OnClickButtonClose()
+    //API
+    protected override async Task OnInitializedAsync()
     {
-        await Liff.CloseWindow();
+        try
+        {
+            Console.WriteLine("API接続開始");
+            //Azure APIへつなげる準備
+            string url = $"https://lifelinebotapi.azurewebsites.net/api/GroupDetails/GetGroupDetails?group_Id={Group_Id}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Access-Control-Allow-Origin", "*");
+            //リクエスト投げる
+            HttpResponseMessage response = await Http.SendAsync(request);
+            //取得値の処理
+            string resJson = await response.Content.ReadAsStringAsync();
+            detailsResult = JsonSerializer.Deserialize<DetailsResult>(resJson);
+            //結果反映
+            StateHasChanged();
+            Console.Write(resJson);
+            Console.WriteLine("API接続完了");
+
+        }
+        catch (Exception e)
+        {
+            await JSRuntime.InvokeAsync<object>("alert", e.ToString());
+        }
     }
 }
