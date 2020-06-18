@@ -1,12 +1,12 @@
 ﻿@using LifeLineClient.Models
 
-<li class="list-group-item">
+<li class="list-group-item member-profile">
     <div class="@Member.status profile-img"><img alt="profile_img" src="@Member.img_Url" /></div>
-    <h3>@Member.name</h3>
-    <div>
-        <p>@Member.comment</p>
+    <h3 class="member-name">@Member.name</h3>
+    <div class="member-safety">
+        <p> @Member.comment</p>
         <p>@Member.location_Title</p>
-        <p>@Member.location_Address</p>
+        <p> @Member.location_Address</p>
         <p>更新日時：@Member.created_At</p>
     </div>
 </li>

@@ -7,31 +7,28 @@
 @inject HttpClient Http
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
-@* 一覧へ戻るボタン *@
 
 @if (detailsResult != null)
 {
-<div class="sidebar">
-    <div class="top-row pl-4 navbar navbar-dark">
-        <h2>@detailsResult.group_Name</h2>
-    </div>
+<div class="details-tabbar">
+    <h2 class="details-tabbar-title">@detailsResult.group_Name</h2>
 </div>
 
 <section class="group-total-status">
-    <div class="group-total-status-item group-count"><p>グループ人数</p><p>@detailsResult.group_Count</p></div>
-    <div class="group-total-status-item group-safely"><p>無事</p><p>@detailsResult.group_Safely</p></div>
-    <div class="group-total-status-item group-injured"><p>重傷・軽傷</p><p>@detailsResult.group_Injured</p></div>
+    <div class="group-total-status-item group-count"><p>グループ人数</p><p class="total-num">@detailsResult.group_Count</p></div>
+    <div class="group-total-status-item group-safely"><p>無事</p><p class="total-num">@detailsResult.group_Safely</p></div>
+    <div class="group-total-status-item group-injured"><p>重傷・軽傷</p><p class="total-num">@detailsResult.group_Injured</p></div>
 </section>
 <section>
     @if (detailsResult.liffMemberSafeties.Count > 0)
-        {
-    <ul class="list-group">
-        @foreach (Member member in detailsResult.liffMemberSafeties)
-                {
-        <GroupMembers Member="@member" />
-                }
-    </ul>
-        }
+    {
+        <ul class="list-group">
+            @foreach (Member member in detailsResult.liffMemberSafeties)
+            {
+                <GroupMembers Member="@member" />
+            }
+        </ul>
+    }
 </section>
 }
 
