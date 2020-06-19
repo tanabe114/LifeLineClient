@@ -7,11 +7,15 @@
 @inject HttpClient Http
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
 
 @if (detailsResult != null)
 {
 <div class="details-tabbar">
-    <h2 class="details-tabbar-title">@detailsResult.group_Name</h2>
+    <div class="details-tabbar-contents">
+        <a href="/" class="back-button"></a>
+        <h2 class="details-tabbar-title">@detailsResult.group_Name</h2>
+    </div>
 </div>
 
 <section class="group-total-status">
@@ -22,12 +26,12 @@
 <section>
     @if (detailsResult.liffMemberSafeties.Count > 0)
     {
-        <ul class="list-group">
-            @foreach (Member member in detailsResult.liffMemberSafeties)
+    <ul class="list-group">
+        @foreach (Member member in detailsResult.liffMemberSafeties)
             {
                 <GroupMembers Member="@member" />
             }
-        </ul>
+    </ul>
     }
 </section>
 }
@@ -56,7 +60,6 @@
     {
         try
         {
-            Console.WriteLine("API接続開始");
             //Azure APIへつなげる準備
             string url = $"https://lifelinebotapi.azurewebsites.net/api/GroupDetails/GetGroupDetails?group_Id={Group_Id}";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -68,9 +71,6 @@
             detailsResult = JsonSerializer.Deserialize<DetailsResult>(resJson);
             //結果反映
             StateHasChanged();
-            Console.Write(resJson);
-            Console.WriteLine("API接続完了");
-
         }
         catch (Exception e)
         {

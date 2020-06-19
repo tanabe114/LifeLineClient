@@ -5,8 +5,14 @@ html, body {
     color: #333;
 }
 
+.navbar-brand{
+    font-weight: 700;
+}
+
 h2 {
-    padding: 10px 0;
+    padding: 20px;
+    margin: 0;
+    font-size: 24px;
 }
 
 app {
@@ -104,11 +110,59 @@ app {
 .details-tabbar {
     height: 56px;
     background: #38BFCF;
+    display: flex;
+    align-items: center;
 }
+
+    .details-tabbar .details-tabbar-contents {
+        display: flex;
+        align-items: center;
+        padding: 0 0 0 24px;
+    }
+
+    .details-tabbar .back-button {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        text-decoration: none;
+        font-size: 15px;
+        padding: 0 0 0 20px;
+    }
+
+    .details-tabbar .back-button:hover {
+        cursor: pointer;
+    }
+
+        .details-tabbar .back-button::before,
+        .details-tabbar .back-button::after {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            content: "";
+            vertical-align: middle;
+        }
+
+            .details-tabbar .back-button::before:hover,
+            .details-tabbar .back-button::after:hover {
+                cursor: pointer;
+            }
+
+        .details-tabbar .back-button::before {
+            width: 20px;
+            height: 20px;
+            border-top: 5px solid #fff;
+            border-left: 5px solid #fff;
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
 
     .details-tabbar .details-tabbar-title {
         font-size: 18px;
         color: #fff;
+        padding: 0 0 0 10px;
+        margin: 0;
     }
 
 .group-list {
@@ -139,14 +193,15 @@ app {
 }
 
     .group-total-status-item p {
-        padding: 15px 0;
+        padding: 20px 0 0;
         font-size: 18px;
         margin: 0;
     }
 
         .group-total-status-item p.total-num {
             font-size: 36px;
-            padding: 0 0 15px;
+            padding: 5px 0 15px;
+            margin: 0;
         }
 
 .group-count {
@@ -195,7 +250,7 @@ app {
 }
 
 .member-safety {
-    max-width: 160px;
+    max-width: 167px;
     display: flex;
     flex-direction: column;
     font-size: 12px;

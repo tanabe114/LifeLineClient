@@ -1,4 +1,5 @@
 ﻿@page "/"
+@page "/index"
 @inject ILiffClient Liff
 @inject IJSRuntime JSRuntime
 @inject HttpClient Http
@@ -12,18 +13,18 @@
 <div>
     @if (indexResults != null)
     {
-        <ul class="list-group group-list">
-            @foreach (IndexResult indexResult in indexResults)
+    <ul class="list-group group-list">
+        @foreach (IndexResult indexResult in indexResults)
             {
-                <li class="list-group-item" >
-                    <a href="details/@indexResult.group_Id">@indexResult.group_Name (@indexResult.group_Count)</a>
-                </li>
+        <li class="list-group-item">
+            <a href="details/@indexResult.group_Id">@indexResult.group_Name (@indexResult.group_Count)</a>
+        </li>
             }
-        </ul>
+    </ul>
     }
     else
     {
-        <p>所属グループ一覧を読み込み中です。<br />しばらくお待ちください。</p>
+    <p>所属グループ一覧を読み込み中です。<br />しばらくお待ちください。</p>
     }
 </div>
 
